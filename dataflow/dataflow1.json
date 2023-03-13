@@ -1,0 +1,71 @@
+{
+	"name": "dataflow1",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "ds1",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "ds2",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "select1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          Country as string,",
+				"          Population as string,",
+				"          YearlyChange as string,",
+				"          NetChange as string,",
+				"          Density as string,",
+				"          LandArea as string,",
+				"          Migrants as string,",
+				"          {Fert.Rate} as string,",
+				"          {Med.Age} as string,",
+				"          {UrbanPop%} as string,",
+				"          WorldShare as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> source1",
+				"source1 select(mapColumn(",
+				"          Country,",
+				"          Population,",
+				"          YearlyChange,",
+				"          NetChange,",
+				"          Density,",
+				"          LandArea,",
+				"          Migrants,",
+				"          {Fert.Rate},",
+				"          {Med.Age},",
+				"          {UrbanPop%},",
+				"          WorldShare",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"select1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink1"
+			]
+		}
+	}
+}
